@@ -164,12 +164,3 @@ All API endpoints with request/response examples are available on API Documentat
 - Tokens are verified server-side for secure access
 
 ---
-
-## 🛠 Built With
-
-- **Frontend:** Angular 18
-- **Backend:** Node.js, Express.js
-- **Database:** PostgreSQL, TypeORM
-- **Authentication:** JWT
-
----

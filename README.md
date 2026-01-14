@@ -84,6 +84,19 @@ The backend is built with **Node.js (Express) and PostgreSQL**, while the fronte
 
 ---
 
+## 🛠 Environment Variables
+
+Create a `.env` file in the `backend` directory with the required environment variables.
+
+⚠️ **Note:** Sensitive credentials (database passwords, JWT secrets) are shared separately by email (please check attached file in the email).
+
+Contact ME:
+
+- Email: [okasha.i.anas@gmail.com](mailto:okasha.i.anas@gmail.com)
+- LinkedIn: [Anas Okasha](https://www.linkedin.com/in/anas-okasha/)
+
+---
+
 ### ⚙️ Installation
 
 ### 1. Clone the repository
@@ -105,24 +118,24 @@ npm install
 npm run migration:run
 ```
 
-### 4. Start the application
+### 4. Start Backend Server
 
 ```bash
-npm run start:dev
+npm run dev
 ```
 
----
+### 5. Install Frontend dependencies
 
-## 🛠 Environment Variables
+```bash
+cd frontend/
+npm install
+```
 
-Create a `.env` file in the `backend` directory with the required environment variables.
+### 6. Start Frontend Server
 
-⚠️ **Note:** Sensitive credentials (database passwords, JWT secrets) are shared separately by email (please check attached file in the email).
-
-Contact ME:
-
-- Email: [okasha.i.anas@gmail.com](mailto:okasha.i.anas@gmail.com)
-- LinkedIn: [Anas Okasha](https://www.linkedin.com/in/anas-okasha/)
+```bash
+npm run start
+```
 
 ---
 

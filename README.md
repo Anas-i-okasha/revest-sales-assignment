@@ -1,9 +1,8 @@
 # Revest Sales App
 
-The **Revest Sales App** is a fullstack application for managing **sales orders and products**. The application supports **user registration and authentication**, displays **cross-sell products dynamically**, and provides a **professional e-commerce style homepage** with search and cart functionality.
+The **Revest Sales App** is a fullstack application for managing **sales orders and products**. The application supports **user registration and authentication**, displays **cross-sell products**.
 
-The backend is built with **Node.js (Express) and PostgreSQL**, while the frontend is developed using **Angular 18**.
-
+The backend is built with:
 - **Backend:** Node.js (Express) + PostgreSQL
 - **Frontend:** Angular 18
 - **Authentication:** JWT-based secure login
@@ -91,7 +90,6 @@ Create a `.env` file in the `backend` directory with the required environment va
 ⚠️ **Note:** Sensitive credentials (database passwords, JWT secrets) are shared separately by email (please check attached file in the email).
 
 Contact ME:
-
 - Email: [okasha.i.anas@gmail.com](mailto:okasha.i.anas@gmail.com)
 - LinkedIn: [Anas Okasha](https://www.linkedin.com/in/anas-okasha/)
 
@@ -143,10 +141,8 @@ npm run start
 
 Once the backend and frontend are running, users can:
 
-- Register or log in
+- Register or login
 - Browse products and add items to the cart
-- View cross-sell product suggestions
-- Create and manage sales orders
 
 ---
 
@@ -167,10 +163,6 @@ All API endpoints with request/response examples are available on API Documentat
 - Protected routes require a valid JWT in the `Authorization` header
 - Tokens are verified server-side for secure access
 
-### Additional Security Features
-
-- Request and error logging for observability
-
 ---
 
 ## 🛠 Built With
@@ -181,7 +173,5 @@ All API endpoints with request/response examples are available on API Documentat
 - **Authentication:** JWT
 
 ---
-
-```
 
 ```

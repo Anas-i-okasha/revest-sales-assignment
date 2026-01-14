@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { LoginForm, RegisterForm, UserInfo } from './auth.interface';
 
 @Injectable({
 	providedIn: 'root'
@@ -9,11 +10,20 @@ export class AuthService {
 
 	constructor(private http: HttpClient) {}
 
-	login(form: any) {
+	getCurrentUserInfo() {
+		const userStr = localStorage.getItem('currentUser');
+		return userStr ? JSON.parse(userStr) : {};
+	}
+
+	isLoggedIn(): boolean {
+		return !!Object.keys(this.getCurrentUserInfo()).length;
+	}
+
+	login(form: LoginForm) {
 		return this.http.post(`${this.API_URL}/login`, form);
 	}
 
-	register(form: any) {
+	register(form: RegisterForm) {
 		return this.http.post(`${this.API_URL}/register`, form);
 	}
 }

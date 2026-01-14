@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -18,7 +18,8 @@ export class LoginComponent {
 
 	constructor(
 		private fb: FormBuilder,
-		private authService: AuthService
+		private authService: AuthService,
+		private router: Router
 	) {
 		this.loginForm = this.fb.group({
 			email: ['', [Validators.required, Validators.email]],
@@ -36,9 +37,16 @@ export class LoginComponent {
 
 		if (this.loginForm.invalid) return;
 
-		this.authService.login(this.loginForm.value).subscribe({
-			next: (res) => console.log('Logged in successfully', res),
-			error: (err) => (this.errorMessage = err.error?.message || 'Login failed')
+		this.authService.login(this.loginForm.value).subscribe((res: any) => {
+			//TODO: ADD Access Function Or Permissions RBAC */
+			const currentUser = {
+				first_name: res.first_name,
+				last_name: res.last_name,
+				accessToken: res.accessToken
+			};
+
+			localStorage.setItem('currentUser', JSON.stringify(currentUser));
+			return this.router.navigate(['dashboard']);
 		});
 	}
 }

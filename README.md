@@ -173,5 +173,3 @@ All API endpoints with request/response examples are available on API Documentat
 - **Authentication:** JWT
 
 ---
-
-```

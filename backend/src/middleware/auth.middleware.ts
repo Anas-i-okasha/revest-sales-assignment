@@ -1,11 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { verifyToken } from '../utility/auth';
 
-export interface AuthRequest extends Request {
-	user?: any;
-}
 
-export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
 	const authHeader = req.headers.authorization;
 
 	if (!authHeader) 
@@ -17,8 +14,9 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
 		return res.status(401).json({ message: 'Invalid authorization format' });
 
 	try {
-		const decoded = jwt.verify(token, process.env.JWT_SECRET_TOKEN as string);
-		req.user = decoded;
+		const decoded = verifyToken(token);
+		//TODO: we should get the userInfo and token then save these info inside the session (req.session) to be used with each request
+		// req.session.user = decoded;
 		next();
 	} catch (err) {
 		return res.status(401).json({ message: 'Invalid or expired token' });

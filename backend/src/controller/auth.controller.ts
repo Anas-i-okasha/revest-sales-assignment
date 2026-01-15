@@ -5,8 +5,8 @@ import { UserRepository } from '../config/repositories';
 
 const userRepo = UserRepository;
 
-export default class AuthController {
-	register = async (req: Request, res: Response) => {
+export class AuthController {
+	async register(req: Request, res: Response) {
 		try {
 			const { first_name, last_name, email, password, confirm_password } = req.body;
 
@@ -28,18 +28,19 @@ export default class AuthController {
 
 			await userRepo.save(user);
 
-			const token = signToken({ userId: user.id, email: user.email });
+			const { password: _pass, ...userWithoutPassword } = user;
 
 			return res.status(201).json({
 				message: 'User registered successfully',
-				token,
+				userWithoutPassword,
 			});
 		} catch (ex) {
-			throw ex;
+			console.error(ex, 'register');
+			res.status(500).json({ message: 'Server error:: register' });
 		}
 	};
 
-	login = async (req: Request, res: Response) => {
+	async login(req: Request, res: Response) {
 		try {
 			const { email, password } = req.body;
 
@@ -52,9 +53,19 @@ export default class AuthController {
 				return res.status(401).json({ message: 'Invalid credentials' });
 
 			const token = signToken({ userId: userInfo.id, email: userInfo.email });
-			return res.json({ token });
+
+			return res.status(200).json({
+				message: 'Login successful',
+				data: {
+					firstName: userInfo.first_name,
+					lastName: userInfo.last_name,
+					email: userInfo.email,
+					accessToken: token,
+				},
+			});
 		} catch(ex) {
-			throw ex;
+			console.error(ex, 'login');
+			res.status(500).json({ message: 'Server error:: login' });
 		}
 	};
 }

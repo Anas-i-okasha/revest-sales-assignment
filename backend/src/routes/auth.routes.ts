@@ -1,10 +1,12 @@
-import { Router } from 'express';
-import AuthController  from '../controller/auth.controller';
+import { Request, Response, Router } from 'express';
+import { AuthController } from '../controller/auth.controller';
 
-const router = Router();
+const router: Router = Router();
 const controller = new AuthController();
 
-router.post('/login', controller.login);
-router.post('/register',  controller.register);
+// TODO:: middleware to validate Input
+
+router.post('/login', (req: Request, res: Response) => controller.login(req, res));
+router.post('/register', (req: Request, res: Response) => controller.register(req, res));
 
 export default router;

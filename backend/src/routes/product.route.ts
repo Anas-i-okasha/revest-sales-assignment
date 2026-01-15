@@ -1,19 +1,24 @@
-import { Router } from 'express';
-import {
-	createProduct,
-	getProducts,
-	getProductById,
-	updateProduct,
-	deleteProduct,
-} from '../controller/products.controller';
+import { Request, Response, Router } from 'express';
+import { Products } from '../controller/products.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
 
+const controller = new Products();
 const router = Router();
 
-router.post('/', authMiddleware, createProduct);
-router.get('/', authMiddleware, getProducts);
-router.get('/:id', authMiddleware, getProductById);
-router.put('/:id', authMiddleware, updateProduct);
-router.delete('/:id', authMiddleware, deleteProduct);
+//TODO: Add Input Validation
+
+router.post('/', authMiddleware, (req: Request, res: Response) =>
+	controller.createProduct(req, res),
+);
+router.get('/', authMiddleware, (req: Request, res: Response) => controller.getProducts(req, res));
+router.get('/:id', authMiddleware, (req: Request, res: Response) =>
+	controller.getProductById(req, res),
+);
+router.put('/:id', authMiddleware, (req: Request, res: Response) =>
+	controller.updateProduct(req, res),
+);
+router.delete('/:id', authMiddleware, (req: Request, res: Response) =>
+	controller.deleteProduct(req, res),
+);
 
 export default router;

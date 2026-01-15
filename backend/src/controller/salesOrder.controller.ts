@@ -16,36 +16,37 @@ export class Sales {
 
 	async getSalesOrders(req: Request, res: Response) {
 		try {
-			const { customerName, email, mobileNumber, status, orderDate } = req.query;
+			const { customer_name, email, phone_num, status, order_date } = req.query;
 
-			const query = salesOrderRepo
-				.createQueryBuilder('order')
-				.leftJoinAndSelect('order.products', 'product');
+			const query = salesOrderRepo.createQueryBuilder('order').leftJoinAndSelect('order.products', 'product');
 
-			if (customerName) {
-				query.andWhere('order.customerName ILIKE :customerName', {
-					customerName: `%${customerName}%`,
+			if (customer_name) {
+				query.andWhere('order.customer_name ILIKE :customerName', {
+					customerName: `%${customer_name}%`,
 				});
 			}
 
 			if (email) 
 				query.andWhere('order.email ILIKE :email', { email: `%${email}%` });
 
-			if (mobileNumber) {
-				query.andWhere('order.mobileNumber ILIKE :mobileNumber', {
-					mobileNumber: `%${mobileNumber}%`,
+			if (phone_num) {
+				query.andWhere('order.phone_num ILIKE :mobileNumber', {
+					mobileNumber: `%${phone_num}%`,
 				});
 			}
 
 			if (status) 
 				query.andWhere('order.status = :status', { status });
 
-			if (orderDate) 
-				query.andWhere('order.orderDate = :orderDate', { orderDate });
+			if (order_date) 
+				query.andWhere('order.order_date = :orderDate', { order_date });
 
 			const orders = await query.getMany();
 
-			return { err: null, res: orders };
+			return res.status(200).json({
+				message: 'Sales order list',
+				data: orders
+			});
 		} catch (error) {
 			console.error('getSalesOrders error:', error);
 			return res.status(500).json({ message: 'Server error while fetching orders' });

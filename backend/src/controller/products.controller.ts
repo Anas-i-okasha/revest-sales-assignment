@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { ProductsRepository } from '../config/repositories';
+import { Product } from '../entities/products.entity';
 
 const productRepo = ProductsRepository;
 
@@ -53,13 +54,32 @@ export class Products {
 
 	async updateProduct(req: Request, res: Response) {
 		try {
-			const productId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+			const productId = req.params.id;
 
 			const product = await productRepo.findOneBy({ id: +productId });
-			if (!product) 
+			if (!product)
 				return res.status(404).json({ message: 'Product not found' });
+			
+			// Whitelist allowed fields
+			const allowedFields: Partial<Product> = {
+				name: req.body.name,
+				description: req.body.description,
+				price: req.body.price,
+				is_active: req.body.is_active,
+			};
 
-			productRepo.merge(product, req.body);
+			// Remove undefined values
+			Object.keys(allowedFields).forEach((key) =>
+				allowedFields[key as keyof Product] === undefined && delete allowedFields[key as keyof Product]
+			);
+
+			if (!Object.keys(allowedFields).length) {
+				return res.status(400).json({
+					message: 'At least one field must be provided to update',
+				});
+			}
+
+			productRepo.merge(product, allowedFields);
 			await productRepo.save(product);
 
 			return res.status(200).json({
@@ -67,8 +87,8 @@ export class Products {
 				data: product,
 			});
 		} catch (ex) {
-			console.error(ex, 'updateProduct');
-			res.status(500).json({ message: 'Server error:: updateProduct' });
+			console.error('updateProduct error:', ex);
+			return res.status(500).json({ message: 'Server error :: updateProduct' });
 		}
 	}
 
@@ -80,7 +100,7 @@ export class Products {
 			if (!product) 
 				return res.status(404).json({ message: 'Product not found' });
 
-			await productRepo.delete(req.params.id);
+			await productRepo.softDelete(req.params.id);
 
 			return res.status(200).json({
 				message: 'Product deleted successfully',

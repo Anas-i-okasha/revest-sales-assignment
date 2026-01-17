@@ -18,7 +18,7 @@ export class Sales {
 		try {
 			const { customer_name, email, phone_num, status, order_date } = req.query;
 
-			const query = salesOrderRepo.createQueryBuilder('order').leftJoinAndSelect('order.products', 'product');
+			const query = salesOrderRepo.createQueryBuilder('order').leftJoinAndSelect('order.products', 'product').where('order.is_deleted IS NULL');
 
 			if (customer_name) {
 				query.andWhere('order.customer_name ILIKE :customerName', {
@@ -39,7 +39,7 @@ export class Sales {
 				query.andWhere('order.status = :status', { status });
 
 			if (order_date) 
-				query.andWhere('order.order_date = :orderDate', { order_date });
+				query.andWhere('order.order_date = :order_date', { order_date });
 
 			const orders = await query.getMany();
 

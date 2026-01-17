@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import { Products } from '../controller/products.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { validate } from '../middleware/validate.middleware';
-import { createProductValidator } from '../utility/validator';
+import { createProductValidator, updateProductValidator } from '../utility/validator';
 
 const controller = new Products();
 const router = Router();
@@ -15,7 +15,7 @@ router.get('/', authMiddleware, (req: Request, res: Response) => controller.getP
 router.get('/:id', authMiddleware, (req: Request, res: Response) =>
 	controller.getProductById(req, res),
 );
-router.put('/:id', authMiddleware, (req: Request, res: Response) =>
+router.put('/:id', authMiddleware, updateProductValidator, validate, (req: Request, res: Response) =>
 	controller.updateProduct(req, res),
 );
 router.delete('/:id', authMiddleware, (req: Request, res: Response) =>

@@ -40,13 +40,13 @@ export class LoginComponent {
 		this.authService.login(this.loginForm.value).subscribe((res: any) => {
 			//TODO: ADD Access Function Or Permissions RBAC */
 			const currentUser = {
-				first_name: res.first_name,
-				last_name: res.last_name,
-				accessToken: res.accessToken
+				first_name: res.data.first_name,
+				last_name: res.data.last_name,
+				accessToken: res.data.accessToken
 			};
 
 			localStorage.setItem('currentUser', JSON.stringify(currentUser));
-			return this.router.navigate(['dashboard']);
+			return this.router.navigate(['/home']);
 		});
 	}
 }

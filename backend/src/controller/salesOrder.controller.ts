@@ -59,6 +59,8 @@ export class Sales {
 			if (!Array.isArray(product_ids)) 
 				product_ids = [product_ids];
 
+			if (order_date)
+				order_date = new Date(order_date*1000);
 			// Inner function to be executed within a transaction
 			const innerFunction = async (entityManager: EntityManager) => {
 				const products = await entityManager.findByIds(Product, product_ids);
@@ -80,9 +82,9 @@ export class Sales {
 				await entityManager.save(order);
 
 				// Trigger third-party request
+				//! We need to check the response valid or not
 				const apiResponse = await this.handleThirdPartyRequest(order);
 
-				// If third-party API failed, throw an error to rollback the transaction
 				if (!apiResponse || apiResponse.status !== 200)
 					throw new Error('Third-party API failed');
 
@@ -109,6 +111,14 @@ export class Sales {
 		}
 
 		try {
+
+			//! Please Note Revest Team
+			/******
+				 * Please Note (I think there is something wrong!):
+				 * - The response I received contains HTML constant (response.data).
+				 * - The status is 200 instead of 201, and the statusText is "OK"!!.
+				 * Could you please check this and update me regarding the expected response from this API?
+			*******/
 			const response = await axios.post(
 				salesOrderThirdPartyAPI,
 				{
@@ -122,9 +132,13 @@ export class Sales {
 				{
 					headers: {
 						Authorization: `Bearer ${thirdPartyAPIToken}`,
+						'Content-Type': 'application/json',
+						Accept: 'application/json',
 					},
 				},
 			);
+
+			console.log('Third Party API response---->', response);
 
 			return response;
 		} catch (error) {

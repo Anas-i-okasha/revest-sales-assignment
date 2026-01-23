@@ -14,5 +14,5 @@ export const AppDataSource = new DataSource({
 	entities: [__dirname + '/../**/*.entity.{js,ts}'],
 	synchronize: false, // Never ever true in Prod, since any change in entities will effect Production database
 	logging: false,
-	migrations: ['src/migrations/*.ts'],
+	migrations: [__dirname + '/../migrations/*.{js,ts}'],
 });

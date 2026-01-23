@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: always
+    env_file: 
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persists all DB data here
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d revest-sales"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  migration:
+    build:
+      context: ..
+      dockerfile: Docker/Dockerfile.backend
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    command: npm run migration:run
+    volumes:
+      - ../backend:/app
+      - /app/node_modules
+
+  backend:
+    build:
+      context: ..
+      dockerfile: Docker/Dockerfile.backend
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      migration:
+        condition: service_completed_successfully
+    volumes:
+      - ../backend:/app
+      # - /app/backend/node_modules
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: Docker/Dockerfile.frontend
+    ports:
+      - "4200:4200"
+    volumes:
+      - ../frontend:/app
+      # - /app/frontend/node_modules
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data: # Definition for the named volume

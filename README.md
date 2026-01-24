@@ -136,6 +136,25 @@ npm run start
 ```
 
 ---
+### ⚙️ Running the App with Docker
+- Follow these steps to run the app using Docker and Docker Compose:
+### 1. Make sure Docker are installed on your system
+### 2. Open Docker Desktop
+### 3. Build and start the container:
+```bash
+docker compose up --build
+```
+
+### 4. Stop the container
+```bash
+docker compose down
+```
+
+### 5. Stop and remove containers, networks, and volumes:
+```bash
+docker compose down -v
+```
+---
 
 ## 🚀 Usage
 

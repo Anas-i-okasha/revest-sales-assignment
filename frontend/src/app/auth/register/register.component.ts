@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { passwordMatchValidator } from '../../shared/password.validator';
 
@@ -19,7 +19,8 @@ export class RegisterComponent {
 
 	constructor(
 		private fb: FormBuilder,
-		private authService: AuthService
+		private authService: AuthService,
+		private router: Router
 	) {
 		this.registerForm = this.fb.group(
 			{
@@ -44,7 +45,7 @@ export class RegisterComponent {
 		if (this.registerForm.invalid) return;
 
 		this.authService.register(this.registerForm.value).subscribe({
-			next: (res) => console.log('Registered successfully', res),
+			next: (res) => this.router.navigate(['/login']),
 			error: (err) => (this.errorMessage = err.error?.message || 'Registration failed')
 		});
 	}

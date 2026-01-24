@@ -1,1 +1,78 @@
-<p>header works!</p>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+	<a class="navbar-brand fw-bold" href="#">Revest Sales App</a>
+
+	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div id="nav" class="collapse navbar-collapse">
+		<ul class="navbar-nav me-auto">
+			<li class="nav-item"><a class="nav-link active">Home</a></li>
+			<li class="nav-item"><a class="nav-link">Products</a></li>
+			<li class="nav-item"><a class="nav-link">About</a></li>
+			<li class="nav-item"><a class="nav-link">Contact</a></li>
+		</ul>
+
+		<form class="d-flex me-3">
+			<input class="form-control" placeholder="Search products..." />
+		</form>
+
+		<!-- Cart Button -->
+		<button class="btn btn-outline-light position-relative" (click)="openCart()">
+			🛒
+			<span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+				{{ cartItems.length }}
+			</span>
+		</button>
+	</div>
+</nav>
+
+<!-- Cart Modal -->
+<!-- Cart Modal -->
+<div #cartModal class="modal fade" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Your Cart</h5>
+				<button type="button" class="btn-close" (click)="closeCart()"></button>
+			</div>
+
+			<div class="modal-body">
+				<div *ngIf="cartItems.length === 0">Cart is empty</div>
+
+				<ul class="list-group mb-3" *ngIf="cartItems.length > 0">
+					<li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let item of cartItems">
+						{{ item.name }} x {{ item.quantity }}
+						<span>$ {{ item.price * item.quantity | number: '1.2-2' }}</span>
+						<button class="btn btn-sm btn-danger ms-2" (click)="removeFromCart(item.id || 0)">Remove</button>
+					</li>
+				</ul>
+
+				<!-- Customer Info Form -->
+				<div *ngIf="cartItems.length > 0">
+					<div class="mb-2">
+						<label class="form-label">Customer Name</label>
+						<input type="text" class="form-control" [(ngModel)]="customer_name" />
+					</div>
+					<div class="mb-2">
+						<label class="form-label">Email</label>
+						<input type="email" class="form-control" [(ngModel)]="email" />
+					</div>
+					<div class="mb-2">
+						<label class="form-label">Phone Number</label>
+						<input type="tel" class="form-control" [(ngModel)]="phone_num" />
+					</div>
+					<div class="mb-2">
+						<label class="form-label">Address</label>
+						<textarea class="form-control" rows="2" [(ngModel)]="address"></textarea>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer" *ngIf="cartItems.length > 0">
+				<button class="btn btn-secondary" (click)="closeCart()">Close</button>
+				<button class="btn btn-success" (click)="createSalesOrder()">Create Order</button>
+			</div>
+		</div>
+	</div>
+</div>

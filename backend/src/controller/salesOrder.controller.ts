@@ -4,7 +4,10 @@ import { SalesOrderRepository } from '../config/repositories';
 import { DataSource, EntityManager } from 'typeorm';
 import { Product } from '../entities/products.entity';
 import { SalesOrder } from '../entities/salesOrder.entity';
+import { EmailService } from '../services/email.service';
+import { User } from '../entities/user.entity';
 
+const emailService = new EmailService();
 const salesOrderRepo = SalesOrderRepository;
 
 /****
@@ -55,46 +58,49 @@ export class Sales {
 
 	async createSalesOrder(req: Request, res: Response) {
 		try {
-			let { customer_name, email, phone_num, status, order_date, product_ids } = req.body;
+			let { customer_name, email, phone_num, address, status, order_date=Math.floor(Date.now() / 1000), product_ids } = req.body;
+			const user_id = req.session.user.id;
+
 			if (!Array.isArray(product_ids)) 
 				product_ids = [product_ids];
 
-			if (order_date)
-				order_date = new Date(order_date*1000);
-			// Inner function to be executed within a transaction
-			const innerFunction = async (entityManager: EntityManager) => {
-				const products = await entityManager.findByIds(Product, product_ids);
-				if (!products.length) {
-					// Throwing an error inside a transaction will rollback automatically
-					throw new Error('No valid products found');
-				}
+			if (order_date) 
+				order_date = new Date(order_date * 1000); // convert unix timestamp
 
-				// Create order using transaction manager
-				const order = entityManager.create(SalesOrder, {
+			const order = await this.connection.transaction(async (manager) => {
+
+				const products = await manager.findByIds(Product, product_ids);
+				if (!products.length) 
+					throw new Error('No valid products found');
+
+				const user = await manager.findOne(User, { where: { id: user_id } });
+				if (!user) 
+					throw new Error('User not found');
+
+				const newOrder = manager.create(SalesOrder, {
 					customer_name,
 					email,
 					phone_num,
+					address,
 					status,
 					order_date,
 					products,
+					user,
 				});
 
-				await entityManager.save(order);
+				await manager.save(newOrder);
 
-				// Trigger third-party request
-				//! We need to check the response valid or not
-				const apiResponse = await this.handleThirdPartyRequest(order);
-
+				const apiResponse = await this.handleThirdPartyRequest(newOrder);
 				if (!apiResponse || apiResponse.status !== 200)
 					throw new Error('Third-party API failed');
 
-				return order;
-			};
+				// Send confirmation email to customer
+				await this.sendOrderConfirmationEmail(newOrder);
 
-			// Execute transaction with the inner function
-			const order = await this.connection.transaction(innerFunction);
+				return newOrder;
+			});
 
-			return res.json({ err: null, res: order });
+			return res.status(201).json({ err: null, res: order });
 		} catch (error) {
 			console.error('createSalesOrder error:', error);
 			return res.status(500).json({ message: error || 'Server error while creating order' });
@@ -111,14 +117,13 @@ export class Sales {
 		}
 
 		try {
-
 			//! Please Note Revest Team
 			/******
-				 * Please Note (I think there is something wrong!):
-				 * - The response I received contains HTML constant (response.data).
-				 * - The status is 200 instead of 201, and the statusText is "OK"!!.
-				 * Could you please check this and update me regarding the expected response from this API?
-			*******/
+			 * Please Note (I think there is something wrong!):
+			 * - The response I received contains HTML constant (response.data).
+			 * - The status is 200 instead of 201, and the statusText is "OK"!!.
+			 * Could you please check this and update me regarding the expected response from this API?
+			 *******/
 			const response = await axios.post(
 				salesOrderThirdPartyAPI,
 				{
@@ -144,6 +149,26 @@ export class Sales {
 		} catch (error) {
 			console.error('Third-party API error:', error);
 			return null;
+		}
+	}
+
+	async sendOrderConfirmationEmail(order: SalesOrder) {
+		try {
+			if (!order.email) return;
+
+			const templateData = {
+				customerName: order.customer_name,
+				address: order.address,
+				orderDate: order.order_date.toISOString(),
+				products: order.products.map((p) => ({ name: p.name, price: p.price })),
+				total: order.products.reduce((sum, p) => sum + Number(p.price), 0),
+			};
+
+			const envelope = { to: order.email, subject: 'Your order has been received!' };
+
+			await emailService.sendTemplateEmail('userSalesOrder', envelope, templateData);
+		} catch (error) {
+			console.error('Error sending order confirmation email:', error);
 		}
 	}
 }

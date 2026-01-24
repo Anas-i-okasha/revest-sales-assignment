@@ -1,15 +1,32 @@
 import { Request, Response } from 'express';
 import { ProductsRepository } from '../config/repositories';
 import { Product } from '../entities/products.entity';
+import { EmailService } from '../services/email.service';
+
+const emailService = new EmailService();
 
 const productRepo = ProductsRepository;
 
 export class Products {
 	async createProduct(req: Request, res: Response) {
 		try {
+			const userInfo = req.session.user;
 			const product = productRepo.create(req.body);
 			await productRepo.save(product);
 
+			const envelope = {
+				to: userInfo.email,
+				subject: 'Product Created Successfully',
+			};
+
+			const mailOptions = {
+				userName: `${userInfo.first_name} ${userInfo.last_name}`,
+				productName: product.name,
+				productId: product.id,
+				totalAmount: product.price,
+			};
+
+			await emailService.sendTemplateEmail('createOrder', envelope, mailOptions);
 			return res.status(201).json({
 				message: 'Product created successfully',
 				data: product,

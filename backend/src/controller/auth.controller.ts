@@ -68,4 +68,23 @@ export class AuthController {
 			res.status(500).json({ message: 'Server error:: login' });
 		}
 	};
+
+	async getUserInfo(id?: number, email?: string) {
+		try {
+			if (!id && !email)
+				return { err: 'User identifier missing', res: null };
+
+    		const where = email ? { email } : { id };
+
+    		const userInfo = await userRepo.findOne({ where });
+			if (!userInfo)
+				return { err: 'User not found', res: null };
+
+    		const { password, ...userWithoutPassword } = userInfo;
+
+    		return { err: null, res: userWithoutPassword };
+		} catch (ex) {
+    		console.error(ex, 'getUserInfo');
+		};
+	};
 }

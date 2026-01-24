@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+			}
+			.container {
+				padding: 20px;
+			}
+			.header {
+				font-size: 20px;
+				margin-bottom: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">Order Confirmation</div>
+
+			<p>Hello <strong><%= userName %></strong>,</p>
+
+			<p>Your Product has been successfully created.</p>
+
+			<p><strong>Product ID:</strong> <%= productId %></p>
+			<p><strong>Product Name:</strong> <%= productName %></p>
+			<p><strong>Total Amount:</strong> $<%= totalAmount %></p>
+
+			<p>Thank you for shopping with us!</p>
+		</div>
+	</body>
+</html>

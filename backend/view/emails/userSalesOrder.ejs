@@ -1,0 +1,14 @@
+<h2>Hi <%= customerName %>,</h2>
+<p>Thank you for your order! We have successfully received it at the following address:</p>
+<p><strong><%= address %></strong></p>
+<p>Order Date: <%= orderDate %></p>
+
+<h3>Products:</h3>
+<ul>
+  <% products.forEach(p => { %>
+	<li><%= p.name %> - $<%= p.price %></li>
+  <% }) %>
+</ul>
+
+<p><strong>Total: $<%= total %></strong></p>
+<p>We will notify you once your order is shipped!</p>

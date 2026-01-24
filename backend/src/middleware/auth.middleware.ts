@@ -1,8 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../utility/auth';
+import { AuthController } from '../controller/auth.controller';
+
+const authController = new AuthController();
 
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
 	const authHeader = req.headers.authorization;
 
 	if (!authHeader) 
@@ -14,11 +17,12 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 		return res.status(401).json({ message: 'Invalid authorization format' });
 
 	try {
-		const decoded = verifyToken(token);
-		//TODO: we should get the userInfo and token then save these info inside the session (req.session) to be used with each request
-		// req.session.user = decoded;
+		const decoded = verifyToken(token) as { userId: number; email: string };
+		const userInfo = await authController.getUserInfo(decoded.userId, decoded.email);
+		req.session.user = userInfo?.res;
 		next();
 	} catch (err) {
+		console.error('Token verification failed:', err);
 		return res.status(401).json({ message: 'Invalid or expired token' });
 	}
 };

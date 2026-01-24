@@ -1,0 +1,6 @@
+.hero-img {
+	width: 100%; /* Take full width of container */
+	height: 500px; /* Fixed height for all slides */
+    margin-top: 5px;
+	object-fit: cover; /* Crop/scale image to fill container without distortion */
+}

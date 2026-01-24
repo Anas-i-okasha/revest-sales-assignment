@@ -8,8 +8,11 @@ import {
 	JoinTable,
 	DeleteDateColumn,
 	Index,
+	JoinColumn,
+	ManyToOne,
 } from 'typeorm';
 import { Product } from './products.entity';
+import { User } from './user.entity';
 
 export enum OrderStatus {
 	PENDING = 0,
@@ -38,7 +41,7 @@ export class SalesOrder {
 	@Column({ type: 'timestamp without time zone' })
 	order_date: Date;
 
-	@ManyToMany(() => Product)
+	@ManyToMany(() => Product) // Should we create third table explicitly?
 	@JoinTable()
 	products: Product[];
 
@@ -50,4 +53,11 @@ export class SalesOrder {
 
 	@DeleteDateColumn({ type: 'timestamp without time zone' })
 	deleted_at: Date;
+
+	@ManyToOne(() => User, (user) => user.orders, { nullable: true })
+	@JoinColumn({ name: 'user_id' })
+	user?: User;
+
+	@Column({ type: 'text', nullable: true })
+	address: string;
 }

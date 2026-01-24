@@ -52,10 +52,11 @@ export const salesOrderValidator = [
 	body('status')
 		.optional()
 		.isIn([OrderStatus.PENDING, OrderStatus.COMPLETED, OrderStatus.CANCELLED])
-		.withMessage('Invalid order status'),
+		.withMessage('Invalid order status')
+		.default(OrderStatus.PENDING),
 
 	body('order_date')
-		.notEmpty()
+		.optional()
 		.isInt()
 		.withMessage('Order date is required')
 		.isInt()

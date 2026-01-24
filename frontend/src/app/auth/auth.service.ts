@@ -15,6 +15,10 @@ export class AuthService {
 		return userStr ? JSON.parse(userStr) : {};
 	}
 
+	logout() {
+		localStorage.removeItem('currentUser');
+	}
+
 	isLoggedIn(): boolean {
 		return !!Object.keys(this.getCurrentUserInfo()).length;
 	}

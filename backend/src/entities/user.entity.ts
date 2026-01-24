@@ -6,7 +6,9 @@ import {
 	DeleteDateColumn,
 	UpdateDateColumn,
 	Index,
+	OneToMany,
 } from 'typeorm';
+import { SalesOrder } from './salesOrder.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -26,6 +28,9 @@ export class User {
 	@Column({ type: 'text', nullable: false })
 	password: string;
 
+	@Column({ type: 'boolean', default: false })
+	is_admin: boolean;
+
 	@CreateDateColumn({ type: 'timestamp without time zone' })
 	created_at: Date;
 
@@ -34,4 +39,7 @@ export class User {
 
 	@DeleteDateColumn({ type: 'timestamp without time zone' })
 	deleted_at: Date;
+
+	@OneToMany(() => SalesOrder, (order) => order.user)
+	orders: SalesOrder[];
 }

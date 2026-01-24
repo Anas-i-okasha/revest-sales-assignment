@@ -167,7 +167,12 @@ docker compose down -v
 Once the backend and frontend are running, users can:
 
 - Register or login
-- Browse products and add items to the cart
+- Browse products in home page
+- Admin users can add new products on the home page; when a new product is added, an email notification is sent to users.
+- User can add item to your Cart
+- View and manage your cart before purchase
+- Place orders to be delivered to the user’s address
+- Navigate to product pages to view bills and order history.
 
 ---
 

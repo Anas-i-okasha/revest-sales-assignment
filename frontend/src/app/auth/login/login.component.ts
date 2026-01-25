@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { LoginResponse } from '../auth.interface';
 
 @Component({
 	selector: 'app-login',
@@ -37,16 +38,17 @@ export class LoginComponent {
 
 		if (this.loginForm.invalid) return;
 
-		this.authService.login(this.loginForm.value).subscribe((res: any) => {
-			//TODO: ADD Access Function Or Permissions RBAC */
+		this.authService.login(this.loginForm.value).subscribe((res: { data: LoginResponse }) => {
+			// TODO: Add RBAC permissions / access functions
 			const currentUser = {
-				first_name: res.data.first_name,
-				last_name: res.data.last_name,
-				accessToken: res.data.accessToken
+				firstName: res.data.firstName,
+				lastName: res.data.lastName,
+				accessToken: res.data.accessToken,
+				isAdmin: res.data.isAdmin
 			};
 
 			localStorage.setItem('currentUser', JSON.stringify(currentUser));
-			return this.router.navigate(['/home']);
+			this.router.navigate(['/home']);
 		});
 	}
 }

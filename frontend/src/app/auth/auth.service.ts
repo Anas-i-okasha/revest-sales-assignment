@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { LoginForm, RegisterForm, UserInfo } from './auth.interface';
+import { LoginForm, LoginResponse, RegisterForm, UserInfo } from './auth.interface';
 
 @Injectable({
 	providedIn: 'root'
@@ -24,7 +24,7 @@ export class AuthService {
 	}
 
 	login(form: LoginForm) {
-		return this.http.post(`${this.API_URL}/login`, form);
+		return this.http.post<{ data: LoginResponse }>(`${this.API_URL}/login`, form);
 	}
 
 	register(form: RegisterForm) {

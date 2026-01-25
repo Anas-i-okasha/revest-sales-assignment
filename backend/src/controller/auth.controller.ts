@@ -60,6 +60,7 @@ export class AuthController {
 					firstName: userInfo.first_name,
 					lastName: userInfo.last_name,
 					email: userInfo.email,
+					isAdmin: userInfo.is_admin,
 					accessToken: token,
 				},
 			});

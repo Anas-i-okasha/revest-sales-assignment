@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import axios from 'axios';
 import { SalesOrderRepository } from '../config/repositories';
-import { DataSource, EntityManager } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Product } from '../entities/products.entity';
 import { SalesOrder } from '../entities/salesOrder.entity';
 import { EmailService } from '../services/email.service';
@@ -129,10 +129,9 @@ export class Sales {
 
 		try {
 			/******
-			 * Please Note (I think there is something wrong!):
-			 * - The response I received contains HTML constant (response.data).
-			 * - The status is 200 instead of 201, and the statusText is "OK"!!.
-			 * Could you please check this and update me regarding the expected response from this API?
+			 * Please Note (I used a fake third party API available online!):
+			 * - The response I received contains response.data.
+			 * - The status is 200 where the process completed else there are something error!!.
 			 *******/
 			const response = await axios.post(
 				salesOrderThirdPartyAPI,
@@ -155,7 +154,7 @@ export class Sales {
 
 			console.log('Third Party API response---->', response);
 
-			return response;
+			return response.data;
 		} catch (error) {
 			console.error('Third-party API error:', error);
 			return null;

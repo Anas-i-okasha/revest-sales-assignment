@@ -1,9 +1,10 @@
-import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnInit } from '@angular/core';
 import { Product } from '../models/products.interface';
 import { SalesService } from '../sales.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CartService } from '../models/cart.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
 	selector: 'app-cross-sell',
@@ -12,7 +13,7 @@ import { CartService } from '../models/cart.service';
 	templateUrl: './cross-sell.component.html',
 	styleUrls: ['./cross-sell.component.css']
 })
-export class CrossSellComponent implements AfterViewInit {
+export class CrossSellComponent implements OnInit, AfterViewInit {
 	@ViewChild('addProductModal') addProductModal!: ElementRef<HTMLDivElement>;
 
 	products: Product[] = [];
@@ -22,7 +23,8 @@ export class CrossSellComponent implements AfterViewInit {
 
 	constructor(
 		private productService: SalesService,
-		private cartService: CartService
+		private cartService: CartService,
+		private authService: AuthService
 	) {}
 
 	ngOnInit(): void {
@@ -82,5 +84,9 @@ export class CrossSellComponent implements AfterViewInit {
 	addToCart(product: Product) {
 		this.cartService.addToCart(product);
 		alert(`${product.name} added to cart!`);
+	}
+
+	get userIsAdmin(): boolean {
+		return this.authService.getCurrentUserInfo().isAdmin || false;
 	}
 }

@@ -4,6 +4,14 @@ export interface UserInfo {
 	accessToken: string;
 }
 
+export interface LoginResponse {
+	accessToken: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+	isAdmin: boolean;
+}
+
 export interface LoginForm {
 	email: string;
 	password: string;

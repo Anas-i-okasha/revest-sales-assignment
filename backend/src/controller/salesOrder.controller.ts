@@ -19,8 +19,9 @@ export class Sales {
 
 	async getSalesOrders(req: Request, res: Response) {
 		try {
-			const { customer_name, email, phone_num, status, order_date } = req.query;
-
+			const { customer_name, email, phone_num, status, order_date, user_id, page=1, limit=10 } = req.query;
+			const skip = (+page - 1) * (+limit);
+	
 			const query = salesOrderRepo.createQueryBuilder('order').leftJoinAndSelect('order.products', 'product').where('order.is_deleted IS NULL');
 
 			if (customer_name) {
@@ -38,17 +39,27 @@ export class Sales {
 				});
 			}
 
+			if (user_id)
+				query.andWhere('order.user_id = :user_id', { user_id: +user_id });
+
 			if (status) 
 				query.andWhere('order.status = :status', { status });
 
 			if (order_date) 
 				query.andWhere('order.order_date = :order_date', { order_date });
 
-			const orders = await query.getMany();
+			// Pagination
+			query.skip(skip).take(+limit);
+
+			const [orders, total] = await query.getManyAndCount();
 
 			return res.status(200).json({
 				message: 'Sales order list',
-				data: orders
+				data: orders,
+				total,
+				pageNum: page,
+				pageLimit: limit,
+				totalPages: Math.ceil(total / +limit),
 			});
 		} catch (error) {
 			console.error('getSalesOrders error:', error);
@@ -117,7 +128,6 @@ export class Sales {
 		}
 
 		try {
-			//! Please Note Revest Team
 			/******
 			 * Please Note (I think there is something wrong!):
 			 * - The response I received contains HTML constant (response.data).

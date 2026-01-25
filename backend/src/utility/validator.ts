@@ -89,6 +89,7 @@ export const getSalesOrdersValidator = [
 		.withMessage('Invalid order status'),
 
 	query('order_date').optional().isInt().withMessage('Invalid order timestamp date '),
+	query('user_id').optional().isInt().withMessage('User ID must be an integer'),
 ];
 
 export const updateProductValidator = [

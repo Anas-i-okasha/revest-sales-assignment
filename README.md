@@ -60,6 +60,8 @@ The backend is built with:
 │   │   │   │   ├── hero/
 │   │   │   │   ├── cross-sell/
 │   │   │   │   └── home/
+│   │   │   │   └── billing/
+│   │   │   │   └── order-details/
 │   │   │   ├── auth
 │   │   │   │   ├── login/
 │   │   │   │   ├── register/

@@ -13,3 +13,12 @@ export interface SalesOrder {
 	address: string;
 	product_ids: number[];
 }
+
+export interface Order {
+	id: string;
+	date: string;
+	total: number;
+	items: { name: string; quantity: number; price: number }[];
+	userId: number;
+	userEmail: string;
+}

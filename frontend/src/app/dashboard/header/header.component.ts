@@ -3,11 +3,12 @@ import { CartItem, CartService } from '../models/cart.service';
 import { CommonModule } from '@angular/common';
 import { SalesService } from '../sales.service';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
 	selector: 'app-header',
 	standalone: true,
-	imports: [CommonModule, FormsModule],
+	imports: [CommonModule, FormsModule, RouterModule],
 	templateUrl: './header.component.html',
 	styleUrl: './header.component.css'
 })
@@ -99,5 +100,12 @@ export class HeaderComponent implements OnInit {
 
 	removeFromCart(productId: number) {
 		this.cartService.removeFromCart(productId);
+	}
+
+	scrollToFooter(tab: string) {
+		const footer = document.getElementById(tab);
+		if (footer) {
+			footer.scrollIntoView({ behavior: 'smooth' });
+		}
 	}
 }

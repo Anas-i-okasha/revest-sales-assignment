@@ -49,7 +49,8 @@ export class LoginComponent {
 			};
 
 			localStorage.setItem('currentUser', JSON.stringify(currentUser));
-			this.router.navigate(['/home']);
+			this.authService.loggedInSubject.next(true);
+			return this.router.navigate(['/home']);
 		});
 	}
 }

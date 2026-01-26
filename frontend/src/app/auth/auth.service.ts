@@ -17,6 +17,10 @@ export class AuthService {
 		return !!this.getCurrentUserInfo().userId;
 	}
 
+	get loggedInSubject() {
+		return this.loggedIn$;
+	}
+
 	isLoggedIn$ = this.loggedIn$.asObservable();
 
 	getCurrentUserInfo() {

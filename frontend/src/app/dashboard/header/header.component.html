@@ -15,9 +15,9 @@
 			</li>
 		</ul>
 
-		<form class="d-flex me-3">
-			<input class="form-control" placeholder="Search products..." (input)="onSearch($event)" />
-		</form>
+		<div class="d-flex me-4">
+			<input class="form-control input-search" placeholder="Search products..." (keydown.enter)="onSearch($event)" />
+		</div>
 
 		<!-- Cart Button -->
 		<button class="btn btn-outline-light position-relative" (click)="openCart()">

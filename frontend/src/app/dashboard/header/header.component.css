@@ -1,3 +1,6 @@
 html {
 	scroll-behavior: smooth;
 }
+.input-search {
+	width: 400px;
+}

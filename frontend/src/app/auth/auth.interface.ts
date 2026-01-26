@@ -5,6 +5,7 @@ export interface UserInfo {
 }
 
 export interface LoginResponse {
+	id: number;
 	accessToken: string;
 	firstName: string;
 	lastName: string;

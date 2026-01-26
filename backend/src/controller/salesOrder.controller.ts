@@ -22,31 +22,31 @@ export class Sales {
 			const { customer_name, email, phone_num, status, order_date, user_id, page=1, limit=10 } = req.query;
 			const skip = (+page - 1) * (+limit);
 	
-			const query = salesOrderRepo.createQueryBuilder('order').leftJoinAndSelect('order.products', 'product').where('order.is_deleted IS NULL');
+			const query = salesOrderRepo.createQueryBuilder('so').leftJoinAndSelect('so.products', 'product').where('so.deleted_at IS NULL');
 
 			if (customer_name) {
-				query.andWhere('order.customer_name ILIKE :customerName', {
+				query.andWhere('so.customer_name ILIKE :customerName', {
 					customerName: `%${customer_name}%`,
 				});
 			}
 
 			if (email) 
-				query.andWhere('order.email ILIKE :email', { email: `%${email}%` });
+				query.andWhere('so.email ILIKE :email', { email: `%${email}%` });
 
 			if (phone_num) {
-				query.andWhere('order.phone_num ILIKE :mobileNumber', {
+				query.andWhere('so.phone_num ILIKE :mobileNumber', {
 					mobileNumber: `%${phone_num}%`,
 				});
 			}
 
 			if (user_id)
-				query.andWhere('order.user_id = :user_id', { user_id: +user_id });
+				query.andWhere('so.user_id = :user_id', { user_id: +user_id });
 
 			if (status) 
-				query.andWhere('order.status = :status', { status });
+				query.andWhere('so.status = :status', { status });
 
 			if (order_date) 
-				query.andWhere('order.order_date = :order_date', { order_date });
+				query.andWhere('so.order_date = :order_date', { order_date });
 
 			// Pagination
 			query.skip(skip).take(+limit);
@@ -102,8 +102,6 @@ export class Sales {
 				await manager.save(newOrder);
 
 				const apiResponse = await this.handleThirdPartyRequest(newOrder);
-				if (!apiResponse || apiResponse.status !== 200)
-					throw new Error('Third-party API failed');
 
 				// Send confirmation email to customer
 				await this.sendOrderConfirmationEmail(newOrder);
@@ -152,7 +150,9 @@ export class Sales {
 				},
 			);
 
-			console.log('Third Party API response---->', response);
+			console.log('Third Party API response---->', response.data);
+			if (!response || response.status !== 200)
+				throw new Error('Third-party API failed');
 
 			return response.data;
 		} catch (error) {

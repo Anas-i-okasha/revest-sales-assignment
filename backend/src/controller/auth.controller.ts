@@ -57,6 +57,7 @@ export class AuthController {
 			return res.status(200).json({
 				message: 'Login successful',
 				data: {
+					id: userInfo.id,
 					firstName: userInfo.first_name,
 					lastName: userInfo.last_name,
 					email: userInfo.email,

@@ -39,10 +39,24 @@ export class Products {
 
 	async getProducts(req: Request, res: Response) {
 		try {
-			const result = await productRepo.find();
-			return res.status(200).json({
-				message: 'Products fetched successfully',
-				data: result,
+			const page = Number(req.query.page) || 1;
+			const limit = Number(req.query.limit) || 10;
+			const search = (req.query.search as string) || '';
+
+
+			const [data, total] = await productRepo.createQueryBuilder('product')
+				.where('LOWER(product.name) LIKE :search', {
+					search: `%${search.toLowerCase()}%`,
+				})
+				.skip((page - 1) * limit)
+				.take(limit)
+				.getManyAndCount();
+
+			res.status(200).json({
+				data,
+				total,
+				page,
+				totalPages: Math.ceil(total / limit),
 			});
 		} catch (ex) {
 			console.error(ex, 'getProducts');

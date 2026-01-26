@@ -79,7 +79,6 @@ export class HeaderComponent implements OnInit {
 			// status: this.status,
 			product_ids: this.cartItems.map((i) => i.id).filter((id): id is number => id !== undefined)
 		};
-		debugger;
 
 		this.salesService.createSalesOrder(payload).subscribe({
 			next: (response) => {
@@ -107,5 +106,10 @@ export class HeaderComponent implements OnInit {
 		if (footer) {
 			footer.scrollIntoView({ behavior: 'smooth' });
 		}
+	}
+
+	onSearch(event: Event) {
+		const value = (event.target as HTMLInputElement).value;
+		this.salesService.setSearchTerm(value);
 	}
 }

@@ -3,34 +3,27 @@
 		<h4>Order {{ order.id }}</h4>
 		<p>
 			<strong>Date:</strong>
-			{{ order.date }}
+			{{ order.order_date |date:'yyyy-MM-dd HH:mm:ss' }}
 		</p>
 		<p>
 			<strong>Email:</strong>
-			{{ order.userEmail }}
+			{{ order.email }}
 		</p>
 
 		<table class="table mt-3">
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Quantity</th>
 					<th>Price</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr *ngFor="let item of order.items">
+				<tr *ngFor="let item of order.products">
 					<td>{{ item.name }}</td>
-					<td>{{ item.quantity }}</td>
 					<td>${{ item.price }}</td>
 				</tr>
 			</tbody>
 		</table>
-
-		<p class="mt-2">
-			<strong>Total:</strong>
-			${{ order.total }}
-		</p>
 
 		<button class="btn btn-secondary mt-3" (click)="closeModal()">Close</button>
 	</div>

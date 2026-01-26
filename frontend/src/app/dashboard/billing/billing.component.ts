@@ -23,7 +23,7 @@ export class BillingComponent {
 
 	ngOnInit() {
 		const userInfo = this.userService.getCurrentUserInfo();
-		this.orderService.getSalesOrderByUser(userInfo.id).subscribe((res: { data: Order[] }) => {
+		this.orderService.getSalesOrderByUser(userInfo.userId).subscribe((res: { data: Order[] }) => {
 			this.orders = res.data;
 		});
 	}

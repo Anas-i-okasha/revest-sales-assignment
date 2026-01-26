@@ -2,8 +2,9 @@
 	<!-- Header -->
 	<div class="d-flex justify-content-between align-items-center mb-4">
 		<h3 class="fw-bold">Recommended Products</h3>
-		<!-- USER ADMIN ONLY -->
-		<button *ngIf="userIsAdmin" class="btn btn-success" (click)="openModal()">➕ Add Product</button>
+		<!-------- USER ADMIN ONLY -------->
+		<!-- <button *ngIf="userIsAdmin" class="btn btn-success" (click)="openModal()">➕ Add Product</button> -->
+		<button class="btn btn-success" (click)="openModal()">➕ Add Product</button>
 	</div>
 
 	<!-- Product Grid -->
@@ -19,38 +20,68 @@
 			</div>
 		</div>
 	</div>
-</div>
 
-<!-- ================= MODAL ================= -->
+	<div class="d-flex justify-content-center mt-4">
+		<button class="btn btn-secondary me-2" (click)="prevPage()">Prev</button>
+		<button class="btn btn-secondary" (click)="nextPage()">Next</button>
+	</div>
 
-<div #addProductModal class="modal fade" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Add New Product</h5>
-				<button type="button" class="btn-close" (click)="closeModal()"></button>
-			</div>
+	<!-- ================= MODAL ================= -->
 
-			<div class="modal-body">
-				<div class="mb-3">
-					<label class="form-label">Product Name</label>
-					<input type="text" class="form-control" [(ngModel)]="newProduct.name" />
+	<div #addProductModal class="modal fade" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Add New Product</h5>
+					<button type="button" class="btn-close" (click)="closeModal()"></button>
 				</div>
 
-				<div class="mb-3">
-					<label class="form-label">Price</label>
-					<input type="number" class="form-control" [(ngModel)]="newProduct.price" />
-				</div>
+				<form #productForm="ngForm">
+					<div class="modal-body">
+						<!-- Product Name -->
+						<div class="mb-3">
+							<label class="form-label">Product Name</label>
+							<input type="text" class="form-control" name="name" [(ngModel)]="newProduct.name" #name="ngModel" required />
+							<div class="text-danger mt-1" *ngIf="name.invalid && name.touched">Product name is required</div>
+						</div>
 
-				<div class="mb-3">
-					<label class="form-label">Description</label>
-					<input type="text" class="form-control" [(ngModel)]="newProduct.description" />
-				</div>
-			</div>
+						<!-- Price -->
+						<div class="mb-3">
+							<label class="form-label">Price</label>
+							<input
+								type="number"
+								class="form-control"
+								name="price"
+								[(ngModel)]="newProduct.price"
+								#price="ngModel"
+								required
+								min="0.01"
+							/>
+							<div class="text-danger mt-1" *ngIf="price.invalid && price.touched">Valid price is required</div>
+						</div>
 
-			<div class="modal-footer">
-				<button class="btn btn-secondary" (click)="closeModal()">Cancel</button>
-				<button class="btn btn-success" (click)="addProduct()">Save Product</button>
+						<!-- Description -->
+						<div class="mb-3">
+							<label class="form-label">Description</label>
+							<input
+								type="text"
+								class="form-control"
+								name="description"
+								[(ngModel)]="newProduct.description"
+								#description="ngModel"
+								required
+							/>
+							<div class="text-danger mt-1" *ngIf="description.invalid && description.touched">Description is required</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+						<button type="button" class="btn btn-success" [disabled]="productForm.invalid" (click)="addProduct()">
+							Save Product
+						</button>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>

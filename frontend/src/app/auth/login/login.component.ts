@@ -41,6 +41,7 @@ export class LoginComponent {
 		this.authService.login(this.loginForm.value).subscribe((res: { data: LoginResponse }) => {
 			// TODO: Add RBAC permissions / access functions
 			const currentUser = {
+				userId: res.data.id,
 				firstName: res.data.firstName,
 				lastName: res.data.lastName,
 				accessToken: res.data.accessToken,

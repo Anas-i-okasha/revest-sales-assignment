@@ -18,6 +18,9 @@ export class CrossSellComponent implements OnInit, AfterViewInit {
 
 	products: Product[] = [];
 	isAdmin = true;
+	page: number = 1;
+	totalPages: number = 1;
+	pageLimit: number = 10
 
 	newProduct: Product = { name: '', price: 0, description: '' };
 
@@ -28,16 +31,22 @@ export class CrossSellComponent implements OnInit, AfterViewInit {
 	) {}
 
 	ngOnInit(): void {
-		this.loadProducts();
+		this.productService.searchTerm$.subscribe((term) => {
+			this.loadProducts(term);
+		});
+
+		this.productService.page$.subscribe((page) => {
+			this.page = page;
+			this.loadProducts();
+		});
 	}
 
-	ngAfterViewInit(): void {
-		
-	}
+	ngAfterViewInit(): void {}
 
-	loadProducts() {
-		this.productService.getProducts().subscribe((response) => {
+	loadProducts(search: string='') {
+		this.productService.getProducts({page: this.page, limit: this.pageLimit, search : search}).subscribe((response) => {
 			this.products = response.data;
+			this.totalPages = response.totalPages;
 		});
 	}
 
@@ -88,5 +97,17 @@ export class CrossSellComponent implements OnInit, AfterViewInit {
 
 	get userIsAdmin(): boolean {
 		return this.authService.getCurrentUserInfo().isAdmin || false;
+	}
+
+	nextPage() {
+		if (this.page < this.totalPages) {
+			this.productService.setPage(this.page + 1);
+		}
+	}
+
+	prevPage() {
+		if (this.page > 1) {
+			this.productService.setPage(this.page - 1);
+		}
 	}
 }

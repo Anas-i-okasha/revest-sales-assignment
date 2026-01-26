@@ -5,6 +5,11 @@ export interface Product {
 	description: string;
 }
 
+export interface ProductRes {
+	products: Product[];
+	totalPages: number;
+}
+
 export interface SalesOrder {
 	id?: number;
 	customer_name: string;
@@ -16,9 +21,10 @@ export interface SalesOrder {
 
 export interface Order {
 	id: string;
-	date: string;
+	order_date: string;
 	total: number;
-	items: { name: string; quantity: number; price: number }[];
+	products: { name: string; quantity: number; price: number }[];
 	userId: number;
-	userEmail: string;
+	email: string;
+	address: string;
 }

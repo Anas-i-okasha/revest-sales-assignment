@@ -140,6 +140,7 @@ npm run start
 ---
 ### ⚙️ Running the App with Docker
 - Follow these steps to run the app using Docker and Docker Compose:
+
 ### 1. Make sure Docker are installed on your system
 ### 2. Open Docker Desktop
 
@@ -153,7 +154,7 @@ cd \Docker
 docker compose up --build
 ```
 
-### 4. Stop the container
+### 4. Stop the container:
 ```bash
 docker compose down
 ```
@@ -174,7 +175,7 @@ Once the backend and frontend are running, users can:
 - User can add item to your Cart
 - View and manage your cart before purchase
 - Place orders to be delivered to the user’s address
-- Navigate to product pages to view bills and order history.
+- Navigate to MyOrders pages to view bills and order history.
 
 ---
 

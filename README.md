@@ -167,9 +167,12 @@ docker compose down -v
 
 ## 🚀 Usage
 
-Once the backend and frontend are running, users can:
+Once both the backend and frontend are running, open your browser at:
+## Run http://localhost:4200
+-The user can:
 
-- Register or login
+# Available Features
+- Register and Login
 - Browse products in home page
 - Admin users can add new products on the home page; when a new product is added, an email notification is sent to users.
 - User can add item to your Cart

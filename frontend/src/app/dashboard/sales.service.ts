@@ -32,8 +32,8 @@ export class SalesService {
 		});
 	}
 
-	addProduct(product: Product) {
-		return this.http.post(this.API_URL, product);
+	addProduct(product: FormData) {
+		return this.http.post<{ data: Product}>(this.API_URL, product);
 	}
 
 	createSalesOrder(cartItems: SalesOrder) {
@@ -45,5 +45,9 @@ export class SalesService {
 			observe: 'body',
 			params: { user_id: userId }
 		});
+	}
+
+	deleteProduct(productId: number) {
+		return this.http.delete(`${this.API_URL}/${productId}`);
 	}
 }

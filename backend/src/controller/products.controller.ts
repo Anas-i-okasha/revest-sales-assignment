@@ -2,16 +2,26 @@ import { Request, Response } from 'express';
 import { ProductsRepository } from '../config/repositories';
 import { Product } from '../entities/products.entity';
 import { EmailService } from '../services/email.service';
+import fs  from 'fs';
+import path from 'path';
 
 const emailService = new EmailService();
 
 const productRepo = ProductsRepository;
+const imagesFolder: string = '/uploads/products/';
 
 export class Products {
 	async createProduct(req: Request, res: Response) {
 		try {
 			const userInfo = req.session.user;
-			const product = productRepo.create(req.body);
+			const { name, price, description } = req.body;
+
+			const product = productRepo.create({
+				name,
+				price,
+				description,
+				image_url: req.file? `${imagesFolder}${req.file.filename}` : null
+			});
 			await productRepo.save(product);
 
 			const envelope = {
@@ -128,9 +138,13 @@ export class Products {
 			const productId = req.params.id;
 
 			const product = await productRepo.findOneBy({ id: +productId });
-			if (!product) 
+			if (!product || !product.id) 
 				return res.status(404).json({ message: 'Product not found' });
 
+			if (product.image_url) {
+				const imagePath = path.join(__dirname, '../../', product.image_url);
+				await fs.rmSync(imagePath);
+			}
 			await productRepo.softDelete(req.params.id);
 
 			return res.status(200).json({

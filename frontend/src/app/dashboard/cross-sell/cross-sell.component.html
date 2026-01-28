@@ -12,10 +12,18 @@
 		<div class="col-md-3" *ngFor="let product of products">
 			<div class="card h-100 shadow-sm">
 				<div class="card-body text-center">
+					<img
+						*ngIf="product.image_url"
+						[src]="product.image_url"
+						class="img-fluid mb-2"
+						style="max-height: 150px; object-fit: cover"
+					/>
+
 					<h6 class="card-title">{{ product.name }}</h6>
 					<p>{{ product.description }}</p>
 					<p class="fw-bold text-success">$ {{ product.price }}</p>
 					<button class="btn btn-primary btn-sm" (click)="addToCart(product)">Add</button>
+					<button *ngIf="userIsAdmin" class="btn btn-danger btn-sm ms-4" (click)="deleteProduct(product.id || 0)">🗑 Delete</button>
 				</div>
 			</div>
 		</div>
@@ -72,6 +80,10 @@
 								required
 							/>
 							<div class="text-danger mt-1" *ngIf="description.invalid && description.touched">Description is required</div>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Product Image</label>
+							<input type="file" class="form-control" accept="image/*" (change)="onFileSelected($event)" />
 						</div>
 					</div>
 

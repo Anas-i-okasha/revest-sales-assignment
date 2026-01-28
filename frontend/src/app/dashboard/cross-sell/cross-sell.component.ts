@@ -20,7 +20,8 @@ export class CrossSellComponent implements OnInit, AfterViewInit {
 	isAdmin = true;
 	page: number = 1;
 	totalPages: number = 1;
-	pageLimit: number = 10
+	pageLimit: number = 10;
+	selectedFile!: File | null;
 
 	newProduct: Product = { name: '', price: 0, description: '' };
 
@@ -43,8 +44,8 @@ export class CrossSellComponent implements OnInit, AfterViewInit {
 
 	ngAfterViewInit(): void {}
 
-	loadProducts(search: string='') {
-		this.productService.getProducts({page: this.page, limit: this.pageLimit, search : search}).subscribe((response) => {
+	loadProducts(search: string = '') {
+		this.productService.getProducts({ page: this.page, limit: this.pageLimit, search: search }).subscribe((response) => {
 			this.products = response.data;
 			this.totalPages = response.totalPages;
 		});
@@ -75,10 +76,16 @@ export class CrossSellComponent implements OnInit, AfterViewInit {
 	}
 
 	addProduct() {
-		const productToAdd = { ...this.newProduct };
-		this.products.unshift(productToAdd);
+		const formData = new FormData();
 
-		this.productService.addProduct(productToAdd).subscribe((response) => {
+		formData.append('name', this.newProduct.name);
+		formData.append('price', this.newProduct.price.toString());
+		formData.append('description', this.newProduct.description);
+
+		if (this.selectedFile) formData.append('image', this.selectedFile);
+
+		this.productService.addProduct(formData).subscribe((response) => {
+			this.products.unshift(response.data);
 			console.log('Product added:', response);
 		});
 
@@ -109,5 +116,19 @@ export class CrossSellComponent implements OnInit, AfterViewInit {
 		if (this.page > 1) {
 			this.productService.setPage(this.page - 1);
 		}
+	}
+
+	onFileSelected(event: Event) {
+		const input = event.target as HTMLInputElement;
+		if (input.files && input.files.length > 0) this.selectedFile = input.files[0];
+	}
+
+	deleteProduct(productId: number) {
+		if (!confirm('Are you sure you want to delete this product?'))
+			return;
+
+		this.productService.deleteProduct(productId).subscribe(() => {
+			this.products = this.products.filter((p) => p.id !== productId);
+		});
 	}
 }

@@ -27,6 +27,9 @@ export class Product {
 	@Column({ default: true })
 	is_active: boolean;
 
+	@Column({ nullable: true })
+	image_url: string;
+
 	@CreateDateColumn({ type: 'timestamp without time zone' })
 	created_at: Date;
 

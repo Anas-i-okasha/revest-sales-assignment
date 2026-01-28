@@ -3,12 +3,13 @@ import { Products } from '../controller/products.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { validate } from '../middleware/validate.middleware';
 import { createProductValidator, updateProductValidator } from '../utility/validator';
+import { upload } from '../config/file-upload';
 
 const controller = new Products();
 const router = Router();
 
 
-router.post('/', authMiddleware, createProductValidator, validate, (req: Request, res: Response) =>
+router.post('/', authMiddleware, upload.single('image'), createProductValidator, validate, (req: Request, res: Response) =>
 	controller.createProduct(req, res),
 );
 router.get('/', authMiddleware, (req: Request, res: Response) => controller.getProducts(req, res));

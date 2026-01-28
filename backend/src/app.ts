@@ -26,6 +26,7 @@ app.use(
 );
 
 /***** Register Routers  *******/
+app.use('/uploads', express.static('uploads'));
 
 app.use('/api/auth', authRouter);
 app.use('/api/products', productRouter);
